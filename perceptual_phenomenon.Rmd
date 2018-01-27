@@ -19,8 +19,8 @@ stroop <- read.csv('stroopdata.csv')
 
 ## Question 1: What is our independent variable? What is our dependent variable?
 
-The independent variable: The word condition, which can be congruent or incongruent.
-The dependent variable: The amount of time taken to name ink colors in a list of words with the given word condition.
+1. The independent variable: The word condition, which can be congruent or incongruent.
+1. The dependent variable: The amount of time taken to name ink colors in a list of words with the given word condition.
 
 ## Question 2: What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices.
 
@@ -40,12 +40,27 @@ summary(stroop)
 
 ```{r echo=FALSE}
 ggplot(aes(x = Congruent), data = stroop) +
+  ggtitle("Histogram of time taken by people for the congruent condition") +
+  xlab("Time in seconds taken for the congruent condition") +
+  ylab("No. of people") +
   geom_histogram(binwidth=2)
 ```
+
+Observations:
+
+1. I adjusted the binwidth to 2 to get the overall pattern of the distribution. At this point, it looks bimodal with a positive skew.
+
 ```{r echo=FALSE}
 ggplot(aes(x = Incongruent), data = stroop) +
+  ggtitle("Histogram of time taken by people for the incongruent condition") +
+  xlab("Time in seconds taken for the incongruent condition") +
+  ylab("No. of people") +
   geom_histogram(binwidth=2)
 ```
+
+Observations:
+
+1. The histogram for the incongruent condition almost looks like a positively skewed distribution, but for a big gap between 27s to 33s.
 
 ```{r echo=FALSE}
 stroop_long <- melt(stroop, id.vars=c(), measure.vars=c("Congruent", "Incongruent"), variable.name="condition")
@@ -53,11 +68,23 @@ stroop_long <- melt(stroop, id.vars=c(), measure.vars=c("Congruent", "Incongruen
 
 ```{r echo=FALSE}
 ggplot(aes(x=condition, y=value), data=stroop_long) +
+  ggtitle("Box plot of time taken in congruent and incongruent condition") +
+  xlab("Condition (congruent/incongruent)") +
+  ylab("Time in seconds") +
   geom_boxplot()
 ```
 
+Observations:
+
+1. The incongruent condition has a higher median with two outliers than the congruent condition.
+1. At this point, I expect the increase in time in the incongruent condition to be statistically significant, though we'll verify that using statistical methods.
+
+
 ```{r echo=FALSE}
 ggplot(aes(x=value, fill=condition), data=stroop_long) +
+  ggtitle("Histogram of time taken by people for the congruent & incongruent condition") +
+  xlab("Time in seconds taken for the congruent condition") +
+  ylab("No. of people") +
   geom_histogram(binwidth=2, position="identity", alpha=0.8)
 ```
 
@@ -65,20 +92,20 @@ ggplot(aes(x=value, fill=condition), data=stroop_long) +
 
 ### Point estimate
 
-Let's first look at the point estimate of the differences in timings. This is $\mu_{congruent} - \mu_{incongruent}$.
+Let's first look at the point estimate of the differences in timings. This is $\mu_{incongruent} - \mu_{congruent}$.
 
 ```{r echo=FALSE}
-14.05 - 22.02
+22.02 - 14.05
 ```
 
-Thus, $\mu_{congruent} - \mu_{incongruent} = -7.97$.
+Thus, $\mu_{incongruent} - \mu_{congruent} = 7.97$.
 
 ### Pair-wise differences in the timing
 
-The next step is to find the SD of the differences in timings. For that, I'll add a new column to the dataset containing the difference: congruent - incongruent.
+The next step is to find the SD of the differences in timings. For that, I'll add a new column to the dataset containing the difference: incongruent - congruent.
 
 ```{r echo=FALSE}
-stroop$difference = stroop$Congruent - stroop$Incongruent
+stroop$difference = stroop$Incongruent - stroop$Congruent
 
 stroop
 ```
@@ -101,12 +128,12 @@ The sample standard deviation of the `difference` variable comes to: 4.864827.
 
 The t-statistic is given by:
 
-$$t = \frac{\mu_{congruent} - \mu_{incongruent}}{\frac{S}{\sqrt(n)}}$$
+$$t = \frac{\mu_{incongruent} - \mu_{congruent}}{\frac{S}{\sqrt(n)}}$$
 ```{r echo=FALSE}
--7.97 / (4.864827 / sqrt(24))
+7.97 / (4.864827 / sqrt(24))
 ```
 
-The value of $t$ comes out to be $-8.025952$.
+The value of $t$ comes out to be $8.025952$.
 
 ### Critical t values
 
@@ -120,7 +147,17 @@ Since we're looking at a both the tails, we look up the t-table by first dividin
 
 ### Decision on the hypothesis
 
-Since $-8.025952 < -3.786$, we reject the null hypothesis $H_0$. The confidence level is $0.1%$, which is $0.05%$ on either side.
+Since $8.025952 > 3.786$, we reject the null hypothesis $H_0$. The confidence level is $0.1\%$, which is $0.05\%$ on either side.
 
 Thus, we can say that people performed significantly worse in the incongruent condition than in the congruent condition. The results did match my expectations.
+
+## Question 6: What do you think is responsible for the effects observed? Can you think of an alternative or similar task that would result in a similar effect? Some research about the problem will be helpful for thinking about these two questions!
+
+My first hypothesis, even before doing the research, is that the brain tries to do two things. One is to read the text written, and one is to spell out the color of the text. Since the text is the name of a possibly different color, we take time to settle on just one of them. This only happens in the case where the text spells out a name of the color.
+
+On researching online, I discovered multiple theories. One theory was that our brain can process words faster than it can recognize colors. A second theory suggested that the brain requires more attention to recognize a color than read a word. Another theory, which seems to be the most common, is that of automaticity. The brain automatically understands meaning of words due to our practice of reading, and does not require our conscious efforts, whereas color recognition does.
+
+It seems that stroop effect is also observed with warped words, as referenced in Wikipedia (https://en.wikipedia.org/wiki/Stroop_effect). This is interesting, because warped words are normally used to beat computers in captcha. However, it's a revelation that the task requires more effort from a human.
+
+Another interesting phenomenon is the numerical stroop effect. We generally associate bigger numbers with larger sizes. Comparing digits in incogruent trials (where the smaller digit is written in a larger font) is slower than in the congruent trials (where the larger of the two numbers has a larger font).
 
