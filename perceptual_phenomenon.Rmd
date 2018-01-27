@@ -24,11 +24,25 @@ stroop <- read.csv('stroopdata.csv')
 
 ## Question 2: What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices.
 
-We have two hypotheses. The **null hypothesis** $H_0$, where the mean of congruent and incongruent conditions are not significantly different. Then we have the **alternative hypothesis** $H_a$, where the mean of the congruent and incongruent conditions are significantly different.
+Definitions:
 
-We have a sample distribution as a CSV, but we don't have the population. Although we have the sample statistics (mean and std dev), we don't have the population statistics. Thus, we cannot use the z-test for our hypothesis testing, and will be using t-test.
+**Population mean for the congruent case ($\mu_{congruent}$):** This is the population mean for the congruent condition.
+
+**Population mean for the incongruent case ($\mu_{incongruent}$):** This is the population mean for the incongruent condition.
+
+**Null hypothesis ($H_0$):** The null hypothesis states that the population mean for the congruent condition would be equal to the population mean of the incongruent condition.
+
+$$\mu_{congruent} = \mu_{incongruent}$$
+
+**Alternative hypothesis ($H_a$):** The alternative hypothesis states that the population mean for the congruent condition would be different from the population mean of the incongruent condition. This is a two tailed test.
+
+$$\mu_{congruent} \ne \mu_{incongruent}$$
+
+We have a sample distribution as a CSV, but we don't have the population. We try to infer the population statistics by using the sample statistics. Although we have the sample statistics (mean and std dev), we don't have the population statistics. Thus, we cannot use the z-test for our hypothesis testing, and will be using t-test.
 
 The pair of samples for a given row is dependent, because it's the same person taking both the Congruent and the Incongruent test, in some order. The same person is getting tested under two different conditions. Our objective is to look at the difference in the timing between two conditions for the same person. We're essentially performing a dependent t-test for paired samples.
+
+In our test, we want to conclude whether the sample means in the congruent and the incongruent condition, if different, are really because the underlying population means are also different.
 
 ## Question 3: Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.
 

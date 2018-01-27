@@ -316,9 +316,16 @@ $(document).ready(function () {
 </section>
 <section id="question-2-what-is-an-appropriate-set-of-hypotheses-for-this-task-what-kind-of-statistical-test-do-you-expect-to-perform-justify-your-choices." class="level2">
 <h2>Question 2: What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices.</h2>
-<p>We have two hypotheses. The <strong>null hypothesis</strong> <span class="math inline">\(H_0\)</span>, where the mean of congruent and incongruent conditions are not significantly different. Then we have the <strong>alternative hypothesis</strong> <span class="math inline">\(H_a\)</span>, where the mean of the congruent and incongruent conditions are significantly different.</p>
-<p>We have a sample distribution as a CSV, but we don’t have the population. Although we have the sample statistics (mean and std dev), we don’t have the population statistics. Thus, we cannot use the z-test for our hypothesis testing, and will be using t-test.</p>
+<p>Definitions:</p>
+<p><strong>Population mean for the congruent case (<span class="math inline">\(\mu_{congruent}\)</span>):</strong> This is the population mean for the congruent condition.</p>
+<p><strong>Population mean for the incongruent case (<span class="math inline">\(\mu_{incongruent}\)</span>):</strong> This is the population mean for the incongruent condition.</p>
+<p><strong>Null hypothesis (<span class="math inline">\(H_0\)</span>):</strong> The null hypothesis states that the population mean for the congruent condition would be equal to the population mean of the incongruent condition.</p>
+<p><span class="math display">\[\mu_{congruent} = \mu_{incongruent}\]</span></p>
+<p><strong>Alternative hypothesis (<span class="math inline">\(H_a\)</span>):</strong> The alternative hypothesis states that the population mean for the congruent condition would be different from the population mean of the incongruent condition. This is a two tailed test.</p>
+<p><span class="math display">\[\mu_{congruent} \ne \mu_{incongruent}\]</span></p>
+<p>We have a sample distribution as a CSV, but we don’t have the population. We try to infer the population statistics by using the sample statistics. Although we have the sample statistics (mean and std dev), we don’t have the population statistics. Thus, we cannot use the z-test for our hypothesis testing, and will be using t-test.</p>
 <p>The pair of samples for a given row is dependent, because it’s the same person taking both the Congruent and the Incongruent test, in some order. The same person is getting tested under two different conditions. Our objective is to look at the difference in the timing between two conditions for the same person. We’re essentially performing a dependent t-test for paired samples.</p>
+<p>In our test, we want to conclude whether the sample means in the congruent and the incongruent condition, if different, are really because the underlying population means are also different.</p>
 </section>
 <section id="question-3-report-some-descriptive-statistics-regarding-this-dataset.-include-at-least-one-measure-of-central-tendency-and-at-least-one-measure-of-variability." class="level2">
 <h2>Question 3: Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.</h2>
