@@ -1,0 +1,126 @@
+---
+title: "Testing of Perceptual Phenomenon"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(reshape2)
+```
+
+```{r echo=FALSE}
+stroop <- read.csv('stroopdata.csv')
+```
+
+
+## Question 1: What is our independent variable? What is our dependent variable?
+
+The independent variable: The word condition, which can be congruent or incongruent.
+The dependent variable: The amount of time taken to name ink colors in a list of words with the given word condition.
+
+## Question 2: What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices.
+
+We have two hypotheses. The **null hypothesis** $H_0$, where the mean of congruent and incongruent conditions are not significantly different. Then we have the **alternative hypothesis** $H_a$, where the mean of the congruent and incongruent conditions are significantly different.
+
+We have a sample distribution as a CSV, but we don't have the population. Although we have the sample statistics (mean and std dev), we don't have the population statistics. Thus, we cannot use the z-test for our hypothesis testing, and will be using t-test.
+
+The pair of samples for a given row is dependent, because it's the same person taking both the Congruent and the Incongruent test, in some order. The same person is getting tested under two different conditions. Our objective is to look at the difference in the timing between two conditions for the same person. We're essentially performing a dependent t-test for paired samples.
+
+## Question 3: Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.
+
+```{r echo=FALSE}
+summary(stroop)
+```
+
+## Question 4: Provide one or two visualizations that show the distribution of the sample data. Write one or two sentences noting what you observe about the plot or plots.
+
+```{r echo=FALSE}
+ggplot(aes(x = Congruent), data = stroop) +
+  geom_histogram(binwidth=2)
+```
+```{r echo=FALSE}
+ggplot(aes(x = Incongruent), data = stroop) +
+  geom_histogram(binwidth=2)
+```
+
+```{r echo=FALSE}
+stroop_long <- melt(stroop, id.vars=c(), measure.vars=c("Congruent", "Incongruent"), variable.name="condition")
+```
+
+```{r echo=FALSE}
+ggplot(aes(x=condition, y=value), data=stroop_long) +
+  geom_boxplot()
+```
+
+```{r echo=FALSE}
+ggplot(aes(x=value, fill=condition), data=stroop_long) +
+  geom_histogram(binwidth=2, position="identity", alpha=0.8)
+```
+
+## Now, perform the statistical test and report your results. What is your confidence level and your critical statistic value? Do you reject the null hypothesis or fail to reject it? Come to a conclusion in terms of the experiment task. Did the results match up with your expectations?
+
+### Point estimate
+
+Let's first look at the point estimate of the differences in timings. This is $\mu_{congruent} - \mu_{incongruent}$.
+
+```{r echo=FALSE}
+14.05 - 22.02
+```
+
+Thus, $\mu_{congruent} - \mu_{incongruent} = -7.97$.
+
+### Pair-wise differences in the timing
+
+The next step is to find the SD of the differences in timings. For that, I'll add a new column to the dataset containing the difference: congruent - incongruent.
+
+```{r echo=FALSE}
+stroop$difference = stroop$Congruent - stroop$Incongruent
+
+stroop
+```
+
+### Sample standard deviation of the difference
+
+Next, I'll find the sample standard deviation of the difference. In case of sample, the denominator represents the degrees of freedom, which is $n - 1$ instead of $n$ as in the case of population SD.
+
+The `R` function `sd` already uses $n - 1$ as the denominator, so that's what I'll use.
+
+```{r echo=FALSE}
+sd_difference = sd(stroop$difference)
+
+sd_difference
+```
+
+The sample standard deviation of the `difference` variable comes to: 4.864827.
+
+### Calculation of the t-statistic
+
+The t-statistic is given by:
+
+$$t = \frac{\mu_{congruent} - \mu_{incongruent}}{\frac{S}{\sqrt(n)}}$$
+```{r echo=FALSE}
+-7.97 / (4.864827 / sqrt(24))
+```
+
+The value of $t$ comes out to be $-8.025952$.
+
+### Critical t values
+
+For a sample size of 24, the degree of freedom is 23. Looking up the critical statistical values from the t-table (https://s3.amazonaws.com/udacity-hosted-downloads/t-table.jpg):
+
+1. $\pm2.069$ for $\alpha = 0.05, \alpha_{tail} = 0.025$
+1. $\pm2.807$ for $\alpha = 0.01, \alpha_{tail} = 0.005$
+1. $\pm3.786$ for $\alpha = 0.001, \alpha_{tail} = 0.0005$
+
+Since we're looking at a both the tails, we look up the t-table by first dividing the alpha value by 2.
+
+### Decision on the hypothesis
+
+Since $-8.025952 < -3.786$, we reject the null hypothesis $H_0$. The confidence level is $0.1%$, which is $0.05%$ on either side.
+
+Thus, we can say that people performed significantly worse in the incongruent condition than in the congruent condition. The results did match my expectations.
+
